@@ -59,7 +59,7 @@ namespace Cloud_Web_App.Controllers
                 using var stream = file.OpenReadStream();
                 await _blobService.UploadBlobAsync("product-images", file.FileName, stream);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Home");
         }
 
         [HttpPost]
@@ -69,14 +69,14 @@ namespace Cloud_Web_App.Controllers
             {
                 await _tableService.AddEntityAsync(profile);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Home");
         }
 
         [HttpPost]
         public async Task<IActionResult> ProcessOrder(string orderId)
         {
             await _queueService.SendMessageAsync("order-processing", $"Processing order {orderId}");
-            return RedirectToAction("Index");
+            return RedirectToAction("Home");
         }
 
         [HttpPost]
@@ -87,7 +87,7 @@ namespace Cloud_Web_App.Controllers
                 using var stream = file.OpenReadStream();
                 await _fileService.UploadFileAsync("contracts-logs", file.FileName, stream);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Home");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

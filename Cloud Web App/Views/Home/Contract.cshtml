@@ -4,10 +4,13 @@
 
 <div class="page">
     <div class="wrapper">
-        <form asp-action="UploadContract" method="post" enctype="multipart/form-data">
-            <h1>Upload Contract</h1>
-            <input type="file" name="file" />
-            <button class="btn" type="submit">Upload Contract</button>
-        </form>
+        <div class="form-box">
+            <form asp-action="UploadContract" method="post" enctype="multipart/form-data">
+                <h1>Upload Contract</h1>
+                <p>Upload a File of type .pdf / .doc / .txt</p>
+                <input type="file" name="file" class="btn"/>
+                <button class="btn" type="submit">Upload Contract</button>
+            </form>
+        </div>
     </div>
 </div>

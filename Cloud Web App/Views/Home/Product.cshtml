@@ -4,10 +4,12 @@
 
 <div class="page">
     <div class="wrapper">
-        <form asp-action="UploadImage" method="post" enctype="multipart/form-data">
-            <h1>Upload Product Image</h1>
-            <input type="file" name="file" />
-            <button class="btn" type="submit">Upload Image</button>
-        </form>
+        <div class="form-box">
+            <form asp-action="UploadImage" method="post" enctype="multipart/form-data">
+                <h1>Upload Product Image</h1>
+                <input type="file" name="file" class="btn"/>
+                <button class="btn" type="submit">Upload Image</button>
+            </form>
+        </div>
     </div>
 </div>

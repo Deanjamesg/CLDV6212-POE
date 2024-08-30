@@ -45,7 +45,6 @@ body {
 }
 
 header {
-    /*    background-color: var(--first-col);*/
     justify-content: space-between;
     position: fixed;
     width: 100%;
@@ -55,7 +54,6 @@ header {
     padding: 20px 50px;
     top: 0;
     left: 0;
-    /*    background-color: rgba(0,0,0,0.65);*/
     box-shadow: 3px 3px 20px 1px rgba(0,0,0,0.5);
     backdrop-filter: blur(3px);
     border-bottom: 2px solid rgba(255, 255, 255, .4);
@@ -133,51 +131,84 @@ footer {
     text-align: center;
 }
 
+form {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .wrapper {
+    position: relative;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-form {
-    padding: 30px 60px;
+.form-box {
     border-radius: 15px;
     box-shadow: 3px 3px 15px 3px rgba(0,0,0,0.5);
     display: flex;
+    padding: 60px;
     flex-direction: column;
     border: 2px solid rgba(255, 255, 255, .4);
     justify-content: center;
     align-items: center;
-    margin: 20px;
+    align-content: center;
     backdrop-filter: blur(2px);
+    width: 500px;
 }
 
-form .input-field {
-    margin: 10px 30px;
-    padding: 10px;
-    border: none;
+.input-box {
+    position: relative;
+    margin: 20px 0px;
+    height: 50px;
     width: 100%;
-    background-color:transparent;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.75);
+    font-size: 18px;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: .5s;
+}
+
+.input-box input {
+    background: transparent;
     border: none;
     outline: none;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.75);
+    height: 100%;
+    width: 100%;
 }
 
-form h1 {
-    font-size: 24px;
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -5px;
+}
+
+.form-box h1 {
+    font-size: 28px;
+    padding: 20px;
 }
 
 .btn {
     padding: 10px;
-    margin: 20px 10px;
     border-radius: 5px;
+    margin-top: 15px;
     border: none;
     background-color: var(--first-col);
     color: #fff;
     cursor: pointer;
     transition: .3s;
     width: 100%;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .btn::before {
@@ -188,6 +219,58 @@ form h1 {
     box-shadow: 2px 2px 8px 3px rgba(0,0,0,0.2);
     color: #fff;
 }
+
+.icon-container {
+    padding: 10px;
+    margin: 30px;
+    display: flex;
+    position: relative;
+    border-radius: 120px;
+    font-size: 28px;
+    width: 200px;
+    height: 200px;
+    align-content: center;
+    justify-content: center;
+    align-items: center; 
+    transition: .5s;
+}
+
+.icon-container label {
+    font-size: 24px;
+    position: absolute;
+    transition: all 0.5s cubic-bezier(0.1, 0, 1, 0);
+    opacity: 0;
+    color: transparent;
+    z-index: 1;
+}
+
+.icon-container a {
+    text-decoration: none;
+}
+
+.icon-container ion-icon {
+    font-size: 160px;
+    color: #000;
+    --ionicon-stroke-width: 16px;
+    transition: all 0.5s cubic-bezier(0.5, 0, 0.5, 0.5);
+    z-index: 2;
+}
+
+.icon-container:hover {
+    width: 500px; 
+}
+
+.icon-container:hover ion-icon {
+    transform: translateX(-75%);
+}
+
+.icon-container:hover label {
+    transform: translateX(50%);
+    color: #000;
+    opacity: 1;
+}
+
+
 
 
 

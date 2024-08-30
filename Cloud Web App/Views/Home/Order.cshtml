@@ -4,10 +4,15 @@
 
 <div class="page">
     <div class="wrapper">
-        <form asp-action="ProcessOrder" method="post">
-            <h1>Process Order</h1>
-            <input class="input-field" type="text" name="orderId" placeholder="Order ID" />
-            <button class="btn" type="submit">Process Order</button>
-        </form>
+        <div class="form-box">
+            <form asp-action="ProcessOrder" method="post">
+                <h1>Process Order</h1>
+                <div class="input-box">
+                    <input type="text" name="orderId" required/>
+                    <label>Order Number</label>
+                </div>
+                <button class="btn" type="submit">Process Order</button>
+            </form>
+        </div>
     </div>
 </div>
