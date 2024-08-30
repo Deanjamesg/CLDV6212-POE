@@ -1,0 +1,17 @@
+﻿@model Cloud_Web_App.Models.CustomerProfile
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="page">
+    <div class="wrapper">
+        <form asp-action="AddCustomerProfile" method="post">
+            <h1>Add Customer</h1>
+            <input class="input-field" type="text" name="FirstName" placeholder="First Name" />
+            <input class="input-field" type="text" name="LastName" placeholder="Last Name" />
+            <input class="input-field" type="email" name="Email" placeholder="Email" />
+            <input class="input-field" type="text" name="PhoneNumber" placeholder="Phone Number" />
+            <button class="btn" type="submit">Add Profile</button>
+        </form>
+    </div>
+</div>

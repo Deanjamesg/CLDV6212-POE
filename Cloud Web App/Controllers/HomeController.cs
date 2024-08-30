@@ -10,12 +10,12 @@ namespace Cloud_Web_App.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly BlobService _blobService; 
+        private readonly BlobService _blobService;
 
-        private readonly TableService _tableService; 
+        private readonly TableService _tableService;
 
-        private readonly QueueService _queueService; 
-        
+        private readonly QueueService _queueService;
+
         readonly FileService _fileService;
 
         public HomeController(BlobService blobService, TableService tableService, QueueService queueService, FileService fileService)
@@ -26,12 +26,27 @@ namespace Cloud_Web_App.Controllers
             _fileService = fileService;
         }
 
-        public IActionResult Index()
+        public IActionResult Home()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Customer()
+        {
+            return View();
+        }
+
+        public IActionResult Product()
+        {
+            return View();
+        }
+
+        public IActionResult Order()
+        {
+            return View();
+        }
+
+        public IActionResult Contract()
         {
             return View();
         }
