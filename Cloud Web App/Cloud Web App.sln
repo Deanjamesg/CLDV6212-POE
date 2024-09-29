@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloud Web App", "Cloud Web App.csproj", "{B91F72D8-254E-4775-8106-951C8E0A4173}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloud Web App", "Cloud Web App.csproj", "{B91F72D8-254E-4775-8106-951C8E0A4173}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloud Function App", "..\Cloud Function App\Cloud Function App.csproj", "{00C02C50-E188-437F-A997-735BE9792CEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{B91F72D8-254E-4775-8106-951C8E0A4173}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B91F72D8-254E-4775-8106-951C8E0A4173}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B91F72D8-254E-4775-8106-951C8E0A4173}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C02C50-E188-437F-A997-735BE9792CEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C02C50-E188-437F-A997-735BE9792CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C02C50-E188-437F-A997-735BE9792CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C02C50-E188-437F-A997-735BE9792CEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
