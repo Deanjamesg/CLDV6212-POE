@@ -17,7 +17,9 @@ namespace Cloud_Web_App.Services
         public async Task SendMessageAsync(string queueName, string message)
         {
             var queueClient = _queueServiceClient.GetQueueClient(queueName);
+
             await queueClient.CreateIfNotExistsAsync();
+
             await queueClient.SendMessageAsync(message);
         }
     }

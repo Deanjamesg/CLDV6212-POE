@@ -12,8 +12,11 @@ namespace Cloud_Web_App.Services
         public TableService(IConfiguration configuration)
         {
             var connectionString = configuration["AzureStorage:ConnectionString"];
+
             var serviceClient = new TableServiceClient(connectionString);
+
             _tableClient = serviceClient.GetTableClient("CustomerProfiles");
+
             _tableClient.CreateIfNotExists();
         }
 

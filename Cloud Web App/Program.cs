@@ -11,6 +11,9 @@ namespace Cloud_Web_App
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Register HttpClient
+            builder.Services.AddHttpClient();
+
             // Register your custom services
             builder.Services.AddSingleton<BlobService>();
             builder.Services.AddSingleton<TableService>();

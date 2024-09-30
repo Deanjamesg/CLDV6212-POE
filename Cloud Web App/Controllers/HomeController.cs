@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Cloud_Web_App.Services;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Cloud_Web_App.Controllers
 {
@@ -16,14 +17,18 @@ namespace Cloud_Web_App.Controllers
 
         private readonly QueueService _queueService;
 
-        readonly FileService _fileService;
+        private readonly FileService _fileService;
 
-        public HomeController(BlobService blobService, TableService tableService, QueueService queueService, FileService fileService)
+        private readonly HttpClient _httpClient;
+
+        public HomeController(BlobService blobService, TableService tableService, QueueService queueService, FileService fileService, HttpClient httpClient)
         {
             _blobService = blobService;
             _tableService = tableService;
             _queueService = queueService;
             _fileService = fileService;
+
+            _httpClient = httpClient;
         }
 
         public IActionResult Home()
@@ -49,6 +54,35 @@ namespace Cloud_Web_App.Controllers
         public IActionResult Contract()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CallUploadBlob(IFormFile file)
+        {
+            if (file != null)
+            {
+                var functionUrl = "https://st10378305functions.azurewebsites.net/api/UploadBlob?code=g7V6y2RAxCatZMEUIe8vKy0rIns3ZrQ-hdqTnKsmkWzoAzFuwElRxQ%3D%3D";
+
+                var containerName = "product-images";
+
+                var blobName = file.FileName;
+
+                using var stream = file.OpenReadStream();
+
+                using var content = new MultipartFormDataContent();
+
+                content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+
+                var response = await _httpClient.PostAsync($"{functionUrl}&containerName={containerName}&blobName={blobName}", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Handle error response
+                    return RedirectToAction("Customer");
+                }
+            }
+
+            return RedirectToAction("Order");
         }
 
         [HttpPost]

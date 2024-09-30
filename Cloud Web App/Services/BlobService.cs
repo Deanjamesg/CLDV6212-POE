@@ -18,8 +18,11 @@ namespace Cloud_Web_App.Services
         public async Task UploadBlobAsync(string containerName, string blobName, Stream content)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+
             await containerClient.CreateIfNotExistsAsync();
+
             var blobClient = containerClient.GetBlobClient(blobName);
+
             await blobClient.UploadAsync(content, true);
         }
     }
