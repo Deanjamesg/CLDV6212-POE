@@ -127,8 +127,7 @@ namespace Cloud_Web_App.Controllers
 
                 var client = _httpClientFactory.CreateClient();
 
-                var response = await client.PostAsync($"{functionUrl}&blobName={file.FileName}", content);
-
+                var response = await client.PostAsync($"{functionUrl}&fileName={file.FileName}", content);
             }
 
             return RedirectToAction("Home");

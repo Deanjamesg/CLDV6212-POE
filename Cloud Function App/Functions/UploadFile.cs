@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using Azure.Storage.Files.Shares;
 using Microsoft.AspNetCore.Http;
@@ -15,13 +16,21 @@ namespace Cloud_Function_App.Functions
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            string shareName = req.Query["shareName"];
+            string shareName = "contracts-logs";
 
             string fileName = req.Query["fileName"];
 
-            if (string.IsNullOrEmpty(shareName) || string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName) && string.IsNullOrEmpty(shareName))
             {
                 return new BadRequestObjectResult("Share name and file name must be provided.");
+            }
+            else if (string.IsNullOrEmpty(fileName))
+            {
+                return new BadRequestObjectResult("File name must be provided.");
+            }
+            else if (string.IsNullOrEmpty(shareName))
+            {
+                return new BadRequestObjectResult("Share name must be provided.");
             }
 
             var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
@@ -36,7 +45,22 @@ namespace Cloud_Function_App.Functions
 
             var fileClient = directoryClient.GetFileClient(fileName);
 
-            using var stream = req.Body;
+            //
+
+            //var formdata = await req.ReadFormAsync(); 
+
+            var file = req.Form.Files["file"];
+
+            //return new OkObjectResult($"File Name: {fileName}\nConnection String: {connectionString}");
+
+            //using var stream = req.Body;
+
+            if (file == null || file.Length == 0)
+            {
+                return new BadRequestObjectResult("No file provided or file is empty.");
+            }
+
+            using var stream = file.OpenReadStream();
 
             await fileClient.CreateAsync(stream.Length);
 
