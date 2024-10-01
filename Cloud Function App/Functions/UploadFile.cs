@@ -1,30 +1,48 @@
 using System.Net;
+using Azure.Storage.Files.Shares;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Cloud_Function_App.Functions
 {
-    public class UploadFile
+    public static class UploadFile
     {
-        private readonly ILogger _logger;
-
-        public UploadFile(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<UploadFile>();
-        }
-
         [Function("UploadFile")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string shareName = req.Query["shareName"];
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            string fileName = req.Query["fileName"];
 
-            response.WriteString("Welcome to Azure Functions!");
+            if (string.IsNullOrEmpty(shareName) || string.IsNullOrEmpty(fileName))
+            {
+                return new BadRequestObjectResult("Share name and file name must be provided.");
+            }
 
-            return response;
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+
+            var shareServiceClient = new ShareServiceClient(connectionString);
+
+            var shareClient = shareServiceClient.GetShareClient(shareName);
+
+            await shareClient.CreateIfNotExistsAsync();
+
+            var directoryClient = shareClient.GetRootDirectoryClient();
+
+            var fileClient = directoryClient.GetFileClient(fileName);
+
+            using var stream = req.Body;
+
+            await fileClient.CreateAsync(stream.Length);
+
+            await fileClient.UploadAsync(stream);
+
+            return new OkObjectResult("File uploaded to Azure Files");
         }
     }
 }

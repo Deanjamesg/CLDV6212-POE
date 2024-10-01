@@ -117,11 +117,33 @@ namespace Cloud_Web_App.Controllers
         {
             if (file != null)
             {
-                using var stream = file.OpenReadStream();
-                await _fileService.UploadFileAsync("contracts-logs", file.FileName, stream);
+                var functionUrl = "https://st10378305functions.azurewebsites.net/api/UploadFile?code=ekMqNwAbyUD3EArnJeMPMRXHgZCwxT78CkJDzPbdMaBIAzFu6CrMzw%3D%3D";
+
+                var stream = file.OpenReadStream();
+
+                var content = new MultipartFormDataContent();
+
+                content.Add(new StreamContent(stream), "file", file.FileName);
+
+                var client = _httpClientFactory.CreateClient();
+
+                var response = await client.PostAsync($"{functionUrl}&blobName={file.FileName}", content);
+
             }
+
             return RedirectToAction("Home");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> UploadContract(IFormFile file)
+        //{
+        //    if (file != null)
+        //    {
+        //        using var stream = file.OpenReadStream();
+        //        await _fileService.UploadFileAsync("contracts-logs", file.FileName, stream);
+        //    }
+        //    return RedirectToAction("Home");
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
