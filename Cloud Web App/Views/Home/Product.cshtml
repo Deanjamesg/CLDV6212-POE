@@ -5,7 +5,7 @@
 <div class="page">
     <div class="wrapper">
         <div class="form-box">
-            <form asp-action="CallUploadBlob" method="post" enctype="multipart/form-data">
+            <form asp-controller="Home" asp-action="UploadImage" method="post" enctype="multipart/form-data">
                 <h1>Upload Product Image</h1>
                 <input type="file" name="file" class="btn"/>
                 <button class="btn" type="submit">Upload Image</button>

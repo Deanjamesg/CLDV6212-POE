@@ -14,27 +14,21 @@ namespace Cloud_Function_App.Functions
 {
     public static class UploadBlob
     {
-
         [Function("UploadBlob")]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)]
-        HttpRequest req, ILogger logger)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
-            logger.LogInformation("C# HTTP trigger function processed a request.");
+            string containerName = "product-images";
 
-            var formData = await req.ReadFormAsync();
-
-            var file = formData.Files["file"];
-
-            var containerName = req.Query["containerName"];
-
-            var blobName = req.Query["blobName"];
+            string blobName = req.Query["blobName"];
 
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(blobName))
             {
                 return new BadRequestObjectResult("Container name and blob name must be provided.");
             }
 
-            var connectionString = Environment.GetEnvironmentVariable("AzureStorage:ConnectionString");
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
 
             var blobServiceClient = new BlobServiceClient(connectionString);
 

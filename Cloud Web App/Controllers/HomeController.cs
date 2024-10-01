@@ -4,6 +4,9 @@ using System.Diagnostics;
 using Cloud_Web_App.Services;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+
 
 namespace Cloud_Web_App.Controllers
 {
@@ -21,7 +24,9 @@ namespace Cloud_Web_App.Controllers
 
         private readonly HttpClient _httpClient;
 
-        public HomeController(BlobService blobService, TableService tableService, QueueService queueService, FileService fileService, HttpClient httpClient)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public HomeController(BlobService blobService, TableService tableService, QueueService queueService, FileService fileService, HttpClient httpClient, IHttpClientFactory httpClientFactory)
         {
             _blobService = blobService;
             _tableService = tableService;
@@ -29,6 +34,7 @@ namespace Cloud_Web_App.Controllers
             _fileService = fileService;
 
             _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         public IActionResult Home()
@@ -57,44 +63,37 @@ namespace Cloud_Web_App.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CallUploadBlob(IFormFile file)
+        public async Task<IActionResult> UploadImage(IFormFile file)
         {
             if (file != null)
             {
                 var functionUrl = "https://st10378305functions.azurewebsites.net/api/UploadBlob?code=g7V6y2RAxCatZMEUIe8vKy0rIns3ZrQ-hdqTnKsmkWzoAzFuwElRxQ%3D%3D";
 
-                var containerName = "product-images";
+                var stream = file.OpenReadStream();
 
-                var blobName = file.FileName;
+                var content = new MultipartFormDataContent();
 
-                using var stream = file.OpenReadStream();
+                content.Add(new StreamContent(stream), "file", file.FileName);
 
-                using var content = new MultipartFormDataContent();
+                var client = _httpClientFactory.CreateClient();
 
-                content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+                var response = await client.PostAsync($"{functionUrl}&blobName={file.FileName}", content);
 
-                var response = await _httpClient.PostAsync($"{functionUrl}&containerName={containerName}&blobName={blobName}", content);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    // Handle error response
-                    return RedirectToAction("Customer");
-                }
             }
 
             return RedirectToAction("Order");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadImage(IFormFile file)
-        {
-            if (file != null)
-            {
-                using var stream = file.OpenReadStream();
-                await _blobService.UploadBlobAsync("product-images", file.FileName, stream);
-            }
-            return RedirectToAction("Home");
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> UploadImage(IFormFile file)
+        //{
+        //    if (file != null)
+        //    {
+        //        using var stream = file.OpenReadStream();
+        //        await _blobService.UploadBlobAsync("product-images", file.FileName, stream);
+        //    }
+        //    return RedirectToAction("Home");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> AddCustomerProfile(CustomerProfile profile)
