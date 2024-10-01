@@ -45,15 +45,7 @@ namespace Cloud_Function_App.Functions
 
             var fileClient = directoryClient.GetFileClient(fileName);
 
-            //
-
-            //var formdata = await req.ReadFormAsync(); 
-
             var file = req.Form.Files["file"];
-
-            //return new OkObjectResult($"File Name: {fileName}\nConnection String: {connectionString}");
-
-            //using var stream = req.Body;
 
             if (file == null || file.Length == 0)
             {

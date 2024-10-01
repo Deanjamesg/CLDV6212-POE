@@ -100,17 +100,60 @@ namespace Cloud_Web_App.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tableService.AddEntityAsync(profile);
+                var functionUrl = "https://st10378305functions.azurewebsites.net/api/StoreTableInfo?code=mDOJlam4N0hNmdKk-_1_CrG6h53b4yPoreT31K6l0hIiAzFuxKhXlg%3D%3D";
+
+                using var client = _httpClientFactory.CreateClient();
+
+                using var content = new MultipartFormDataContent();
+
+                content.Add(new StringContent(profile.FirstName), "FirstName");
+
+                content.Add(new StringContent(profile.LastName), "LastName");
+
+                content.Add(new StringContent(profile.Email), "Email");
+
+                content.Add(new StringContent(profile.PhoneNumber), "PhoneNumber");
+
+                var response = await client.PostAsync(functionUrl, content);
             }
+
             return RedirectToAction("Home");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> AddCustomerProfile(CustomerProfile profile)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        await _tableService.AddEntityAsync(profile);
+        //    }
+        //    return RedirectToAction("Home");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> ProcessOrder(string orderId)
         {
-            await _queueService.SendMessageAsync("order-processing", $"Processing order {orderId}");
+            if (orderId != null)
+            {
+                var functionUrl = "https://st10378305functions.azurewebsites.net/api/ProcessQueueMessage?code=JuTjrjtdaCowQF53L3xz8lI84809_Qt9oejUWu_vahvtAzFuW0TqYw%3D%3D";
+
+                using var client = _httpClientFactory.CreateClient();
+
+                var content = new StringContent(orderId, System.Text.Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"{functionUrl}&message={orderId}", null);
+            }
+
             return RedirectToAction("Home");
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> ProcessOrder(string orderId)
+        //{
+        //    await _queueService.SendMessageAsync("order-processing", orderId);
+
+        //    return RedirectToAction("Home");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> UploadContract(IFormFile file)

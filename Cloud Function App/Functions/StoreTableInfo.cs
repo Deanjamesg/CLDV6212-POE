@@ -1,30 +1,56 @@
+using System.Collections.Concurrent;
 using System.Net;
+using Azure.Data.Tables;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Cloud_Function_App.Functions
 {
-    public class StoreTableInfo
+    public static class StoreTableInfo
     {
-        private readonly ILogger _logger;
-
-        public StoreTableInfo(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<StoreTableInfo>();
-        }
-
         [Function("StoreTableInfo")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string tableName = "CustomerProfiles";
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            string partitionKey = "CustomerProfile";
 
-            response.WriteString("Welcome to Azure Functions!");
+            string rowKey = Guid.NewGuid().ToString();
 
-            return response;
+            var formdata = await req.ReadFormAsync();
+
+            string firstName = formdata["FirstName"];
+
+            string lastName = formdata["LastName"];
+
+            string email = formdata["Email"];
+
+            string phoneNumber = formdata["PhoneNumber"];
+
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+
+            var serviceClient = new TableServiceClient(connectionString);
+
+            var tableClient = serviceClient.GetTableClient(tableName);
+
+            await tableClient.CreateIfNotExistsAsync();
+
+            var entity = new TableEntity(partitionKey, rowKey)
+            {
+                ["FirstName"] = firstName,
+                ["LastName"] = lastName,
+                ["Email"] = email,
+                ["PhoneNumber"] = phoneNumber
+            };
+
+            await tableClient.AddEntityAsync(entity);
+
+            return new OkObjectResult("Data added to table");
         }
     }
 }

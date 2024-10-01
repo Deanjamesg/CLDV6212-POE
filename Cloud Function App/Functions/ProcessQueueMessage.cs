@@ -1,30 +1,42 @@
 using System.Net;
+using Azure.Storage.Queues;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Cloud_Function_App.Functions
 {
-    public class ProcessQueueMessage
+    public static class ProcessQueueMessage
     {
-        private readonly ILogger _logger;
-
-        public ProcessQueueMessage(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<ProcessQueueMessage>();
-        }
-
         [Function("ProcessQueueMessage")]
-        public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            ILogger log)
         {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            string queueName = "order-processing";
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            string message = req.Query["message"];
 
-            response.WriteString("Welcome to Azure Functions!");
+            string processOrderMessage = $"Processing order {message}";
 
-            return response;
+            if (string.IsNullOrEmpty(queueName) || string.IsNullOrEmpty(message))
+            {
+                return new BadRequestObjectResult("Queue name and message must be provided.");
+            }
+
+            var connectionString = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+
+            var queueServiceClient = new QueueServiceClient(connectionString);
+
+            var queueClient = queueServiceClient.GetQueueClient(queueName);
+
+            await queueClient.CreateIfNotExistsAsync();
+
+            await queueClient.SendMessageAsync(processOrderMessage);
+
+            return new OkObjectResult("Message added to queue");
         }
     }
 }
