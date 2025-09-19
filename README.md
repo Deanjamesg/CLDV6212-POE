@@ -1,2 +1,6 @@
 # CLDV6212-POE
-ST10378305 | Semester 2 | Cloud Development | Portfolio of Evidence | POE
+
+CLDV6212 - Portfolio of Evidence  
+Cloud Development B  
+ST10378305  
+Dean James Greeff  
